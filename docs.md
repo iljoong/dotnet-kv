@@ -81,6 +81,26 @@ This will set all secrets into config and you can access these just like normal 
 
 > Sample app: https://github.com/aspnet/Docs/tree/master/aspnetcore/security/key-vault-configuration/sample
 
+### User Assigned Identity
+
+When VM/VMSS deleted, `system assigned identity` also deleted. In order to keep identity or create an identity before you create a VM/VMSS, you should use an [user assinged identity](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-manage-ua-identity-portal)
+
+Once you have created an UAI, assign UAI to Azure resources, such as KV, blob and etc. You can also assign UAI on arm template.
+
+```
+            "name": "[parameters('vmssName')]",
+            "apiVersion": "[variables('computeApiVersion')]",
+            "location": "[variables('location')]",
+            "identity": {
+                "type": "userAssigned",
+                "userAssignedIdentities": {
+                    "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('identityName'))]": {}
+                }
+            },
+```
+
+> For more information: https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/qs-configure-template-windows-vm#user-assigned-managed-identity
+
 ### Configuration order
 
 There are many places to add the same configuration. Configuration order is 
